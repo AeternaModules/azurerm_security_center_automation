@@ -31,15 +31,15 @@ EOT
     resource_group_name = string
     scopes              = list(string)
     description         = optional(string)
-    enabled             = optional(bool, true)
+    enabled             = optional(bool) # Default: true
     tags                = optional(map(string))
-    action = object({
+    action = list(object({
       connection_string = optional(string)
       resource_id       = string
       trigger_url       = optional(string)
       type              = optional(string)
-    })
-    source = object({
+    }))
+    source = list(object({
       event_source = string
       rule_set = optional(object({
         rule = object({
@@ -49,7 +49,23 @@ EOT
           property_type  = string
         })
       }))
-    })
+    }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.security_center_automations : (
+        length(v.action) >= 1
+      )
+    ])
+    error_message = "Each action list must contain at least 1 items"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.security_center_automations : (
+        length(v.source) >= 1
+      )
+    ])
+    error_message = "Each source list must contain at least 1 items"
+  }
 }
 
