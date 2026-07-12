@@ -1,3 +1,7 @@
+output "security_center_automations_id" {
+  description = "Map of id values across all security_center_automations, keyed the same as var.security_center_automations"
+  value       = { for k, v in azurerm_security_center_automation.security_center_automations : k => v.id }
+}
 output "security_center_automations_action" {
   description = "Map of action values across all security_center_automations, keyed the same as var.security_center_automations"
   value       = { for k, v in azurerm_security_center_automation.security_center_automations : k => v.action }
