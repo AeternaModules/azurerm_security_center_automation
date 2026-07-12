@@ -24,13 +24,16 @@ resource "azurerm_security_center_automation" "security_center_automations" {
     content {
       event_source = source.value.event_source
       dynamic "rule_set" {
-        for_each = source.value.rule_set != null ? [source.value.rule_set] : []
+        for_each = source.value.rule_set != null ? source.value.rule_set : []
         content {
-          rule {
-            expected_value = rule_set.value.rule.expected_value
-            operator       = rule_set.value.rule.operator
-            property_path  = rule_set.value.rule.property_path
-            property_type  = rule_set.value.rule.property_type
+          dynamic "rule" {
+            for_each = rule_set.value.rule
+            content {
+              expected_value = rule.value.expected_value
+              operator       = rule.value.operator
+              property_path  = rule.value.property_path
+              property_type  = rule.value.property_type
+            }
           }
         }
       }
