@@ -31,7 +31,7 @@ EOT
     resource_group_name = string
     scopes              = list(string)
     description         = optional(string)
-    enabled             = optional(bool) # Default: true
+    enabled             = optional(bool)
     tags                = optional(map(string))
     action = list(object({
       connection_string = optional(string)
@@ -66,6 +66,14 @@ EOT
       )
     ])
     error_message = "Each source list must contain at least 1 items"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.security_center_automations : (
+        alltrue([for item in v.source : (item.rule_set == null || alltrue([for item in item.rule_set : (length(item.rule) >= 1)]))])
+      )
+    ])
+    error_message = "Each rule list must contain at least 1 items"
   }
   # --- Unconfirmed validation candidates, derived from azurerm_security_center_automation's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
