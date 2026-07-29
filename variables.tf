@@ -10,7 +10,7 @@ Required:
         - connection_string (optional)
         - resource_id (required)
         - trigger_url (optional)
-        - type (optional)
+        - type (required)
     - source (block):
         - event_source (required)
         - rule_set (optional, block):
@@ -37,7 +37,7 @@ EOT
       connection_string = optional(string)
       resource_id       = string
       trigger_url       = optional(string)
-      type              = optional(string)
+      type              = string
     }))
     source = list(object({
       event_source = string
